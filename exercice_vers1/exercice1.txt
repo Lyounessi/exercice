@@ -1,1 +1,4 @@
-"WWWW-----W\nW-------WW\nWWW-M--WWW\nWWWWWW--WW"
+WWWW-----W
+W-------WW
+WWW-M--WWW
+WWWWWW--WW
