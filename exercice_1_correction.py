@@ -85,7 +85,7 @@ if __name__ == "__main__":
     print("Réponse de l'exercice 2 :")
     exercice_2()
     print("Réponse de l'exercice 3 :")
-    print(exercice_3("-"))
+    print(exercice_3("W"))
     print("Réponse de l'exercice 4 :")
     print(exercice_4("M"))
     print("Réponse de l'exercice 5 :")
