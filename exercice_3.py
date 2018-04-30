@@ -11,6 +11,11 @@ class Exercices:
         self.macgyver = pygame.image.load("macgyver.png").convert()
         self.exercice_1()
         self.exercice_2()
+        continuer = True
+        while continuer:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    continuer = 0
 
     def exercice_1(self):
         """
@@ -30,7 +35,7 @@ class Exercices:
                 WWWWWW----WWWWW
                 WWWWWWWWWWWWWWW
         Ouvrir le fichier carte.txt et ranger les lettres dans une liste à 2 dimensions :
-            par exemple, self.carte[1][5] doit être égal à "M"
+            par exemple, self.carte[1][6] doit être égal à "M"
         Afficher la carte dans la console
         Afficher avec pygame la carte avec les 3 différents sprites (mur, couloir et MacGyver)
         """
