@@ -9,7 +9,7 @@ class Exercices:
         self.couloir = pygame.image.load("couloir.png").convert()
         self.macgyver = pygame.image.load("macgyver.png").convert()
         self.exercice_1()
-        #self.exercice_2()
+        self.exercice_2()
 
 
     def exercice_1(self):
@@ -37,28 +37,42 @@ class Exercices:
 
         with open("my_map.txt","w") as map:
             map.write(element)
+
         show = open("my_map.txt","r")
         
         for line in show:
             line = line.rstrip('\n')
             self.carte.append([line])
         #print(self.carte)
-        num_ligne = 0
-        for i in self.carte:
-            for elt in i:
-                print(elt)
-            num_cas = 0
-            for x, y, j in enumerate(elt):
-                pos_x = 40 *num_cas
-                pos_y = 40 * num_ligne
-                if j == "W":
-                    self.fenetre.blit(self.mur, (pos_x, pos_y))
-                if j == "M":
-                    self.fenetre.blit(self.macgyver, (pos_x, pos_y))
-                if j == "-":
-                    self.fenetre.blit(self.couloir, (pos_x, pos_y))
-        pygame.display.flip()
+        for elt in self.carte:
+            for char in elt:
+                print(char)
 
+        """Pygame Affichage !"""
+
+        keepon = True
+
+        while keepon:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    keepon = False
+
+
+            #Afficher dans Pygame les sprites a la place des Char dans ma carte
+
+            for elt, value in enumerate(self.carte):
+                pos_y = elt *40
+                for i, char in enumerate(value[0]):
+                    pos_x = 40 * i
+                    if char == "W":
+                        self.fenetre.blit(self.mur, (pos_x, pos_y))
+                    if char == "M":
+                        self.fenetre.blit(self.macgyver, (pos_x, pos_y))
+                    if char == "-":
+                        self.fenetre.blit(self.couloir, (pos_x, pos_y))
+                        self.fenetre.blit(self.couloir, (pos_x, pos_y))
+
+            pygame.display.flip()
 
     def exercice_2(self):
         """
@@ -70,7 +84,24 @@ class Exercices:
         S'il rentre "W", la lettre "M" se déplace vers la gauche dans la liste à 2 dimensions de l'exercice 1 self.carte
         Puis on repose la question pour un autre mouvement...
         """
-        pass
+
+        print("Choisir N Pour que M se déplace vers le haut , S vers le bas , E vers la droite, W vers la gauche, et q pour quitter ! ")
+
+        keep = True
+        while keep:
+            asking = input("Veuiller séléctioner une lettre valide : ")
+            if asking == "N":
+                pass
+            elif asking =="S":
+                pass
+            elif asking == "E":
+                pass
+            elif asking == "W":
+                pass
+            elif asking == "q":
+                keep = False
+            else:
+                print("Lettre invalid")
 
 if __name__ == "__main__":
     exercice = Exercices()
