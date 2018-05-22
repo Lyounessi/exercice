@@ -20,18 +20,25 @@ class Game:
         self.macgyver = Player()
         self.wall = Element("wall")
         self.path = Element("path")
+        self.tube = Element("tube")
+        self.ether = Element("ether")
+        self.needle = Element("needle")
+        self.guardian = Element("guardian")
         self.store_map()
         self.macgyver.y = self.find_pos(self.macgyver)[0]
         self.macgyver.x = self.find_pos(self.macgyver)[1]
         self.show_map_pygame()
-        time.sleep(2)
-        # Random position for MacGyver
+        #time.sleep(2)
+        # Random position for MacGyver and other items
+        self.random_pos(self.tube)
+        self.random_pos(self.ether)
+        self.random_pos(self.needle)
         self.random_pos(self.macgyver)
         self.show_map_pygame()
-        time.sleep(2)
+        #time.sleep(2)
         # Move MacGyver
-        time.sleep(2)
-        self.update_pos("W")
+        #time.sleep(2)
+        #self.update_pos("W")
         self.show_map_pygame()
         # -------------------
         self.continuer = True
@@ -39,7 +46,19 @@ class Game:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.continuer = 0
-
+                if event.type == KEYDOWN:
+                    if event.key == K_DOWN:
+                        self.update_pos("S")
+                        self.show_map_pygame()
+                    if event.key == K_UP:
+                        self.update_pos("N")
+                        self.show_map_pygame()
+                    if event.key == K_RIGHT:
+                        self.update_pos("E")
+                        self.show_map_pygame()
+                    if event.key == K_LEFT:
+                        self.update_pos("W")
+                        self.show_map_pygame()
 
     def store_map(self):
         # ////////////////////////////////////
@@ -63,6 +82,7 @@ class Game:
         # Afficher le labyrinthe dans pygame
         # //////////////////////////////////
         for i, line in enumerate(self.maze):
+
             for j, char in enumerate(line):
                 if char == self.wall.letter:
                     self.window.blit(self.wall.image, (SPRITE_SIZE * j, SPRITE_SIZE * i))
@@ -70,6 +90,14 @@ class Game:
                     self.window.blit(self.macgyver.image, (SPRITE_SIZE * j, SPRITE_SIZE * i))
                 if char == self.path.letter:
                     self.window.blit(self.path.image, (SPRITE_SIZE * j, SPRITE_SIZE * i))
+                if char == self.ether.letter:
+                    self.window.blit(self.ether.image, (SPRITE_SIZE * j, SPRITE_SIZE * i))
+                if char == self.needle.letter:
+                    self.window.blit(self.needle.image, (SPRITE_SIZE * j, SPRITE_SIZE * i))
+                if char == self.tube.letter:
+                    self.window.blit(self.tube.image, (SPRITE_SIZE * j, SPRITE_SIZE * i))
+                if char == self.guardian.letter:
+                    self.window.blit(self.guardian.image, (SPRITE_SIZE * j, SPRITE_SIZE * i))
         pygame.display.flip()
 
     def find_pos(self, elt):
@@ -88,7 +116,7 @@ class Game:
         # Positionner MacGyver dans le labyrinthe
         # ///////////////////////////////////////
         line, col = self.find_pos(elt)
-        char=""
+        char = ""
         rand_line = 0
         rand_char = 0
         # Check if it is a wall or not
@@ -100,11 +128,35 @@ class Game:
         self.maze[rand_line][rand_char] = elt.letter
         elt.x = rand_char
         elt.y = rand_line
-
+        print(elt.x, elt.y, elt.letter)
     def update_pos(self, direction):
-        self.maze[self.macgyver.y][self.macgyver.x] = "-"
+        self.old_x_pos = self.macgyver.x
+        self.old_y_pos = self.macgyver.y
         self.macgyver.move(direction)
-        self.maze[self.macgyver.y][self.macgyver.x] = "M"
+        if self.maze[self.macgyver.y][self.macgyver.x] == "W":
+            self.macgyver.x = self.old_x_pos
+            self.macgyver.y = self.old_y_pos
+            print("Can't across a wall")
+        else :
+            if self.maze[self.macgyver.y][self.macgyver.x] in ["T", "E", "N"]:
+                self.macgyver.list_obj.append(self.maze[self.macgyver.y][self.macgyver.x])
+                print(self.macgyver.list_obj)
+            
+            if self.maze[self.macgyver.y][self.macgyver.x] == "G":
+                if self.macgyver.list_obj != []:
+                    self.macgyver.x = self.old_x_pos
+                    self.macgyver.y = self.old_y_pos
+                    print("won")
+                else:
+                    self.macgyver.x = self.old_x_pos
+                    self.macgyver.y = self.old_y_pos
+                    print("lose")
+
+            self.maze[self.macgyver.y][self.macgyver.x] = "M"
+            self.maze[self.old_y_pos][self.old_x_pos] = "-"
+
+
+
 
 class Element:
 
@@ -112,6 +164,7 @@ class Element:
         # ////////////////////////////////////////////////////////////////////////////////////////////
         # Définir la position initiale et le type d'élèment (éther, aiguille, tube, MacGyver, gardien)
         # ////////////////////////////////////////////////////////////////////////////////////////////
+
         if elt=="macgyver":
             self.image = pygame.image.load(MACGYVER_PIC).convert()
             self.letter = "M"
@@ -121,6 +174,19 @@ class Element:
         elif elt=="path":
             self.image = pygame.image.load(PATH_PIC).convert()
             self.letter = "-"
+        elif elt=="ether":
+            self.image = pygame.image.load(ETHER_PIC).convert()
+            self.letter = "E"
+        elif elt =="tube":
+            self.image = pygame.image.load(TUBE_PIC).convert()
+            self.letter = "T"
+        elif elt == "needle":
+            self.image = pygame.image.load(NEEDLE_PIC).convert()
+            self.letter = "N"
+        elif elt == "guardian":
+            self.image = pygame.image.load(GUARDIAN_PIC).convert()
+            self.letter = "G"
+
         self._x = 0
         self._y = 0
 
@@ -148,10 +214,13 @@ class Player(Element):
         Element.__init__(self, "macgyver")
         self.list_obj = []
 
+
     def move(self, direction):
         # /////////////////////////////////////
         # Déplacer le joueur dans le labyrinthe
         # /////////////////////////////////////
+
+
         if direction=="N":
             self.y = self.y - 1
         elif direction=="S":
