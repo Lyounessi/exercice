@@ -129,6 +129,8 @@ class Game:
         elt.x = rand_char
         elt.y = rand_line
         print(elt.x, elt.y, elt.letter)
+    
+
     def update_pos(self, direction):
         self.old_x_pos = self.macgyver.x
         self.old_y_pos = self.macgyver.y
@@ -143,14 +145,16 @@ class Game:
                 print(self.macgyver.list_obj)
             
             if self.maze[self.macgyver.y][self.macgyver.x] == "G":
-                if self.macgyver.list_obj != []:
+                if len(self.macgyver.list_obj) == 3 :
                     self.macgyver.x = self.old_x_pos
                     self.macgyver.y = self.old_y_pos
-                    print("won")
+                    print("GAME OVER : You Won, Congrats !")
+                    self.continuer = False
                 else:
                     self.macgyver.x = self.old_x_pos
                     self.macgyver.y = self.old_y_pos
-                    print("lose")
+                    print("GAME OVER : You Lose!")
+                    self.continuer = False
 
             self.maze[self.macgyver.y][self.macgyver.x] = "M"
             self.maze[self.old_y_pos][self.old_x_pos] = "-"
